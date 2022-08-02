@@ -1,0 +1,11 @@
+[build.environment]
+  NODE_VERSION = "16"
+  NPM_FLAGS = "--version"
+[build]
+  publish = "dist"
+  command = "npx pnpm i --prod --store=node_modules/.pnpm-store && npm run build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
