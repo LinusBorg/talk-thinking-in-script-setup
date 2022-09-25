@@ -4,6 +4,8 @@
   "scripts": {
     "build": "slidev build",
     "dev": "slidev --open",
+    "repl-dev": "vite -c vite.repl.config.ts",
+    "repl-build": "vite build -c vite.repl.config.ts",
     "export": "slidev export"
   },
   "pnpm": {
@@ -17,17 +19,25 @@
     }
   },
   "dependencies": {
-    "@iconify-json/logos": "^1.1.5",
-    "@iconify-json/teenyicons": "^1.1.1",
-    "@iconify-json/uim": "^1.1.1",
-    "@slidev/cli": "^0.33.0",
+    "@iconify-json/logos": "^1.1.15",
+    "@iconify-json/teenyicons": "^1.1.3",
+    "@iconify-json/uim": "^1.1.2",
+    "@slidev/cli": "^0.35.6",
     "@slidev/theme-default": "*",
     "@slidev/theme-seriph": "*",
-    "@vueuse/core": "^8.6.0",
+    "@vueuse/core": "^9.1.1",
+    "postcss": "^8.2.14",
     "slidev-theme-vuetiful": "^0.3.1",
-    "vue": "^3.2.36"
+    "vue": "^3.2.38"
   },
   "devDependencies": {
-    "playwright-chromium": "^1.22.2"
+    "@linusborg/eslint-config": "^0.3.0",
+    "@vitejs/plugin-vue": "^3.1.0",
+    "@vue/repl": "^1.3.0",
+    "eslint": "^8.23.1",
+    "playwright-chromium": "^1.25.1",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.3",
+    "vite": "^3.1.3"
   }
 }

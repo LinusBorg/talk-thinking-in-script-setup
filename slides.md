@@ -5,14 +5,190 @@ info: |
   ## Bridging the Gap - Building cross-compatible Vue Components with confidence
   Presentation slides for Vuejs Amsterdam, June 2nd-3rd 2022.
 # persist drawings in exports and build
-download: '/slides-export.pdf'
+# download: '/slides-export.pdf'
 drawings:
   persist: false
 ---
 
-# Thinking in &lt;script setup&gt;
+# The right perspective for &lt;script setup&gt;
+
+---
+layout: full-image
+image: GokuVsVegeta
+---
+
+<div class="flex h-full justify-around items-end w-full text-shadow-lg text-pink-400 font-bold ">
+  <div class="pb-12 text-center backdrop-filter bg-transparent backdrop-blur-10">
+    <h2 class="!text-7xl">Options <br> API</h2>
+  </div>
+  <div class="pb-12 text-center backdrop-filter bg-transparent backdrop-blur-10">
+    <h2 class="!text-7xl">Composition <br> API</h2>
+  </div>
+</div>
 
 
+---
+
+<iframe 
+  src="http://localhost:5173?example=Simple"
+  class="w-full h-full overflow-y-scroll"
+  frameborder="0" 
+  marginheight="0" 
+  marginwidth="0"
+  width="100%" 
+  height="100%" 
+  scrolling="auto"
+>
+</iframe>
+
+---
+
+# Where we started: Options API
+
+
+```html
+<script>
+import ChildComponent from './Child.vue'
+
+export defineComponent({
+  data() {
+    return {
+      msg: 'Hello Vue.js Germany!'
+    }
+  },
+  components: {
+    ChildComponent
+  }
+})
+</script>
+<template>
+  <ChildComponent :msg="msg" />
+</template>
+```
+
+---
+
+# The new way: Composition API
+
+```html
+<script>
+import { ref } from 'vue'
+import ChildComponent from './Child.vue'
+
+export defineComponent({
+  setup() {
+    const msg = ref('Hello Vue.js Germany!')
+    return {
+      msg,
+    }
+  },
+  components: {
+    ChildComponent
+  }
+})
+</script>
+<template>
+  <ChildComponent :msg="msg" />
+</template>
+```
+---
+cols: '1-1'
+titleRow: true
+title: 'Comparison: setup() vs <script setup>'
+---
+
+```html {all|2-3,7-10,18-20} 
+<script>
+import {ref } from 'vue'
+import ChildComponent from './Child.vue'
+
+export defineComponent({
+  setup() {
+    const msg = ref('Hello Vue.js Germany!')
+    
+    return {
+      msg
+    }
+  },
+  components: {
+    ChildComponent
+  }
+})
+</script>
+<template>
+  <ChildComponent :msg="msg" />
+</template>
+```
+
+::right::
+
+<v-click>
+
+```html
+<script setup>
+import {ref } from 'vue'
+import ChildComponent from './Child.vue'
+
+const msg = ref('Hello Vue.js Germany!')
+</script>
+<template>
+  <ChildComponent :msg="msg" />
+</template>
+```
+
+</v-click>
+
+---
+cols: '1-1'
+titleRow: false
+clicks: 1
+---
+
+## Svelte
+
+```html
+<script>
+import ChildComponent from './Child.svelte'
+
+let msg = 'Hello Vue.js Germany!'
+</script>
+
+<ChildComponent msg={msg} />
+```
+
+::right::
+
+## Vue <code>&lt;script setup&gt;</code>
+
+<template v-if="$slidev.nav.clicks === 0">
+
+```html
+<script setup>
+import {ref } from 'vue'
+import ChildComponent from './Child.vue'
+
+const msg = ref('Hello Vue.js Germany!')
+</script>
+<template>
+  <ChildComponent :msg="msg" />
+</template>
+```
+
+</template>
+<template v-else>
+
+```html
+<script setup>
+import ChildComponent from './Child.vue'
+
+const msg = $ref('Hello Vue.js Germany!')
+</script>
+<template>
+  <ChildComponent :msg="msg" />
+</template>
+```
+
+</template>
 ---
 layout: big-points
 title: Links Collection
