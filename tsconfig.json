@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "allowJs": true,
+  },
+  "include": [
+    "env.d.ts",
+    "layouts/**/*",
+    "layouts/**/*.vue",
+    "components/**/*",
+    "components/**/*.vue",
+    "repl/**/*",
+    "repl/**/*.vue",
+  ]   
+}
