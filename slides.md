@@ -26,21 +26,6 @@ image: GokuVsVegeta
   </div>
 </div>
 
-
----
-
-<iframe 
-  src="http://localhost:5173?example=Simple"
-  class="w-full h-full overflow-y-scroll"
-  frameborder="0" 
-  marginheight="0" 
-  marginwidth="0"
-  width="100%" 
-  height="100%" 
-  scrolling="auto"
->
-</iframe>
-
 ---
 
 # Where we started: Options API
@@ -94,10 +79,10 @@ export defineComponent({
 ---
 cols: '1-1'
 titleRow: true
-title: 'Comparison: setup() vs <script setup>'
+title: 'From setup() to <script setup>'
 ---
 
-```html {all|2-3,7-10,18-20} 
+```html {all|2-3,7-11,18-20} 
 <script>
 import {ref } from 'vue'
 import ChildComponent from './Child.vue'
@@ -138,25 +123,34 @@ const msg = ref('Hello Vue.js Germany!')
 
 </v-click>
 
+<v-clicks>
+
+* no deep nesting/indentation
+* composition API code right on the first level
+* no setup return value
+* Components must not be registered
+* Imports and top-level variables available in template
+
+</v-clicks>
+
+---
+title: 'Example 1: Basic Compilation'
+layout: vue-repl
+example: Simple
+prod: true
+outputMode: js
+---
+
+---
+layout: section
+---
+# Credit where credit is due
+
 ---
 cols: '1-1'
 titleRow: false
 clicks: 1
 ---
-
-## Svelte
-
-```html
-<script>
-import ChildComponent from './Child.svelte'
-
-let msg = 'Hello Vue.js Germany!'
-</script>
-
-<ChildComponent msg={msg} />
-```
-
-::right::
 
 ## Vue <code>&lt;script setup&gt;</code>
 
@@ -189,6 +183,87 @@ const msg = $ref('Hello Vue.js Germany!')
 ```
 
 </template>
+
+::right::
+
+## Svelte
+
+```html
+<script>
+import ChildComponent from './Child.svelte'
+
+let msg = 'Hello Vue.js Germany!'
+</script>
+
+<ChildComponent msg={msg} />
+```
+
+---
+layout: quote
+author: smart people in the audience
+---
+
+# but ... what about props?
+
+---
+cols: '1-1'
+title: Compiler Hints to the rescue!
+titleRow: true
+---
+
+```html{all|6-9|10|11-15|20|6-15,20}
+<script>
+import { defineComponent } from 'vue'
+import { useVModel } from '@vueuse/core'
+
+export default defineComponent({
+  props: {
+    title: String,
+    modelValue: String,
+  },
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    const model = useVModel(props, 'modelValue', emit)
+    return {
+      model
+    }
+  }
+})
+</script>
+<template>
+  <ChildComponent :title="title" v-model="model" />
+</template>
+
+```
+
+::right::
+
+```html
+<script setup>
+import { useVModel } from "@vueuse/core";
+
+const props = defineProps({
+  title: String,
+  modelValue: String,
+});
+
+const emit = defineEmits(["update:modelValue"]);
+
+const model = useVModel(props, "modelValue", emit);
+</script>
+<template>
+  <ChildComponent :title="title" v-model="model" />
+</template>
+```
+
+---
+title: 'Example 2: Compiler Hints'
+layout: vue-repl
+example: CompilerHints
+prod: true
+outputMode: js
+---
+
 ---
 layout: big-points
 title: Links Collection

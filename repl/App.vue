@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Repl, ReplStore } from "@vue/repl";
+import { Repl, ReplStore, SFCOptions } from "@vue/repl";
 import "@vue/repl/style.css";
 
 import examples from "./examples";
@@ -24,9 +24,40 @@ const store = new ReplStore({
   // defaultVueRuntimeURL: "cdn link to vue.runtime.esm-browser.js",
 });
 
+store.setImportMap({
+  imports: {
+    vue: "https://sfc.vuejs.org/vue.runtime.esm-browser.js",
+    "@vueuse/core": "https://unpkg.com/@vueuse/core@9.2.0/index.mjs?module",
+  },
+});
+
+const sfcOptions: SFCOptions = {
+  script: {
+    inlineTemplate: !!query.has("prod"),
+    reactivityTransform: true,
+  },
+};
+
 // example && store.setFiles(example.files, example.App);
 </script>
 
 <template>
-  <Repl :store="store" style="min-height: 450px" />
+  <Repl
+    :store="store"
+    :sfcOptions="sfcOptions"
+    style="height: 470px; font-size: 10px"
+  />
 </template>
+
+<style>
+.vue-repl .file {
+  font-size: 10px;
+}
+.vue-repl .tab-buttons span {
+  font-size: 10px;
+}
+
+.vue-repl .CodeMirror {
+  line-height: 1.8;
+}
+</style>

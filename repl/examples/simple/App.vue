@@ -1,10 +1,7 @@
-<script setup lang="ts">
-const msg = "Hello Vuejs.de";
+<script setup>
+import { ref } from "vue";
+const msg = ref("Hello Vuejs.de");
 </script>
 <template>
-  <div>
-    <h1>{{ msg }}</h1>
-    <input type="text" v-model="msg" />
-  </div>
+  <input type="text" v-model="msg" />
 </template>
-<style lang="postcss"></style>
