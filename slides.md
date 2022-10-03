@@ -82,7 +82,7 @@ titleRow: true
 title: 'From setup() to <script setup>'
 ---
 
-```html {all|2-3,7-11,18-20} 
+```html {all|2-3,7-11,18-20|2,3,7,18-20} 
 <script>
 import {ref } from 'vue'
 import ChildComponent from './Child.vue'
@@ -123,7 +123,7 @@ const msg = ref('Hello Vue.js Germany!')
 
 </v-click>
 
-<v-clicks>
+<v-click>
 
 * no deep nesting/indentation
 * composition API code right on the first level
@@ -131,7 +131,9 @@ const msg = ref('Hello Vue.js Germany!')
 * Components must not be registered
 * Imports and top-level variables available in template
 
-</v-clicks>
+</v-click>
+
+<h2 v-click class="text-2xl mt-4">Available in Vue <code>2.7</code>!</h2>
 
 ---
 title: 'Example 1: Basic Compilation'
@@ -149,12 +151,10 @@ layout: section
 ---
 cols: '1-1'
 titleRow: false
-clicks: 1
+title: Vue vs. Svelte style
 ---
 
 ## Vue <code>&lt;script setup&gt;</code>
-
-<template v-if="$slidev.nav.clicks === 0">
 
 ```html
 <script setup>
@@ -168,29 +168,15 @@ const msg = ref('Hello Vue.js Germany!')
 </template>
 ```
 
-</template>
-<template v-else>
-
-```html
-<script setup>
-import ChildComponent from './Child.vue'
-
-const msg = $ref('Hello Vue.js Germany!')
-</script>
-<template>
-  <ChildComponent :msg="msg" />
-</template>
-```
-
-</template>
-
 ::right::
+
+<v-click>
 
 ## Svelte
 
 ```html
 <script>
-import ChildComponent from './Child.svelte'
+  import ChildComponent from './Child.svelte'
 
 let msg = 'Hello Vue.js Germany!'
 </script>
@@ -198,6 +184,9 @@ let msg = 'Hello Vue.js Germany!'
 <ChildComponent msg={msg} />
 ```
 
+</v-click>
+
+<iframe v-click class="mt-12" src="https://giphy.com/embed/26DMTEijJDudzovvO" width="320" frameBorder="0" allowFullScreen></iframe>
 ---
 layout: quote
 author: smart people in the audience
@@ -265,36 +254,82 @@ outputMode: js
 ---
 
 ---
-layout: big-points
-title: Links Collection
+cols: '1-1'
+title: Accessing Slots & attrs
+titleRow: true
 ---
 
-<div class="grid grid-rows-3 grid-cols-[150px,1fr] gap-y-8 gap-x-2">
-  <span>Docs</span>
-  <span>
-    <a href="https://vue-bridge.docs.netlify.app" target="blank" rel="noopener">
-      https://vue-bridge.docs.netlify.app
-    </a>
-  </span>
-  <span>Repo</span>
-  <span>
-    <a href="https://github.com/vue-bridge/vue-bridge" target="blank" rel="noopener">
-      https://github.com/vue-bridge/vue-bridge
-    </a>
-  </span>
-  <span>Template</span>
-  <span>
-    <a href="https://github.com/vue-bridge/template-monorepo" target="blank" rel="noopener">
-      https://github.com/vue-bridge/template-monorepo
-    </a>
-  </span>
-  <span>Twitter</span>
-  <span>
-    <a href="https://twitter.com/VueBridge" target="blank" rel="noopener">
-      https://twitter.com/VueBridge
-    </a>
-  </span>
-</div>
+```html{all|2,4|2,4,5|2,4,5,8,9|all}
+<script setup>
+import { useSlots } from "vue";
+
+const slots = useSlots()
+const title = computed(() => slots.default ?? 'Default Title')
+</script>
+<template>
+  <ChildComponent :title="title">
+    <slot />
+  </ChildComponent>
+</template>
+```
+
+::right::
+
+<v-click at=4>
+
+```html{all|2,9|2,9,10-12|2,9,10-12,15|all}
+<script setup>
+import { useAttrs } from "vue";
+
+const props = defineProps({
+  title: String,
+  modelValue: String,
+});
+
+const attrs = useAttrs()
+const id = computed(
+  () => attrs.id ?? 'myid-' + Math.round((Math.random() * 10000))
+)
+</script>
+<template>
+  <ChildComponent :id="id" />
+</template>
+```
+
+</v-click>
+
+<p v-click>These are runtime composables, not compiler hints</p>
+
+---
+layout: big-points
+---
+# A place for everything else?
+
+
+<style>
+.slidev-vclick-target {
+  transition: all 500ms ease;
+}
+
+[data-xzibit].slidev-vclick-hidden {
+  @apply -bottom-full
+}
+</style>
+* more exotic options like `inheritAttrs: false`?
+* helpers?
+* exports?
+
+<h2 v-click class="!text-6xl mt-12 font-bold">Another script block!</h2>
+
+<img v-after src="/xzibit.jpg" data-xzibit class="w-52 block mx-auto -bottom-6 absolute left-[50%]">
+
+---
+layout: vue-repl
+example: secondScript
+title: "Example 3: Second Script Block"
+titleRow: false
+prod: true
+---
 
 ---
 layout: outro
@@ -324,4 +359,35 @@ repository: 'github.com/linusborg'
 
 <a class="text-sm" href="https://sli.dev" target="_blank" rel="noopener">https://sli.dev</a>
 
+</div>
+---
+layout: big-points
+title: Links Collection
+---
+
+<div class="grid grid-rows-3 grid-cols-[150px,1fr] gap-y-8 gap-x-2">
+  <span>Docs</span>
+  <span>
+    <a href="https://vue-bridge.docs.netlify.app" target="blank" rel="noopener">
+      https://vue-bridge.docs.netlify.app
+    </a>
+  </span>
+  <span>Repo</span>
+  <span>
+    <a href="https://github.com/vue-bridge/vue-bridge" target="blank" rel="noopener">
+      https://github.com/vue-bridge/vue-bridge
+    </a>
+  </span>
+  <span>Template</span>
+  <span>
+    <a href="https://github.com/vue-bridge/template-monorepo" target="blank" rel="noopener">
+      https://github.com/vue-bridge/template-monorepo
+    </a>
+  </span>
+  <span>Twitter</span>
+  <span>
+    <a href="https://twitter.com/VueBridge" target="blank" rel="noopener">
+      https://twitter.com/VueBridge
+    </a>
+  </span>
 </div>

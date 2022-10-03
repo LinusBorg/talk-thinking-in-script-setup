@@ -26,8 +26,10 @@ const store = new ReplStore({
 
 store.setImportMap({
   imports: {
-    vue: "https://sfc.vuejs.org/vue.runtime.esm-browser.js",
-    "@vueuse/core": "https://unpkg.com/@vueuse/core@9.2.0/index.mjs?module",
+    vue: "https://unpkg.com/vue/dist/vue.runtime.esm-browser.js",
+    "@vueuse/core": "https://unpkg.com/@vueuse/core@9.2.0/index.mjs",
+    "@vueuse/shared": "https://unpkg.com/@vueuse/shared@9.2.0/index.mjs",
+    "vue-demi": "https://unpkg.com/vue-demi@0.13.11/lib/index.mjs",
   },
 });
 
