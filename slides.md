@@ -1,9 +1,9 @@
 ---
 theme: vuetiful
 layout: cover
+cover: alt
 info: |
-  ## Bridging the Gap - Building cross-compatible Vue Components with confidence
-  Presentation slides for Vuejs Amsterdam, June 2nd-3rd 2022.
+  ## Explaining script-setup implementation and usage tips
 # persist drawings in exports and build
 # download: '/slides-export.pdf'
 drawings:
@@ -11,6 +11,13 @@ drawings:
 ---
 
 # The right perspective for &lt;script setup&gt;
+A look under the hood and into the future
+
+---
+layout: section
+---
+
+# How it came to be
 
 ---
 layout: full-image
@@ -27,11 +34,12 @@ image: GokuVsVegeta
 </div>
 
 ---
+cols: 1-1
+title: 'Where we started: Options API'
+titleRow: true
+---
 
-# Where we started: Options API
-
-
-```html
+```html{all|5,10}
 <script>
 import ChildComponent from './Child.vue'
 
@@ -41,21 +49,40 @@ export defineComponent({
       msg: 'Hello Vue.js Germany!'
     }
   },
+  methods: {
+    handler() { doSomething() }
+  },
   components: {
     ChildComponent
   }
 })
 </script>
 <template>
-  <ChildComponent :msg="msg" />
+  <ChildComponent :msg="msg" @someEvent="handler" />
 </template>
 ```
 
+::right::
+
+### Pros
+
+* Exists more or less since Vue 1
+* Approachable, easy to pick up
+* Everything has "its place"
+
+### Cons
+
+* Sharing behaviour requires mixins
+* Mixins have lots of issues
+* Code is all over the place in big components
+
+---
+cols: 1-1
+titleRow: true
+title: 'The new way: Composition API'
 ---
 
-# The new way: Composition API
-
-```html
+```html{all|2,7,8,10,11}
 <script>
 import { ref } from 'vue'
 import ChildComponent from './Child.vue'
@@ -63,8 +90,10 @@ import ChildComponent from './Child.vue'
 export defineComponent({
   setup() {
     const msg = ref('Hello Vue.js Germany!')
+    function handler() { doSomething() }
     return {
       msg,
+      handler
     }
   },
   components: {
@@ -73,26 +102,40 @@ export defineComponent({
 })
 </script>
 <template>
-  <ChildComponent :msg="msg" />
+  <ChildComponent :msg="msg" @someEvent="handler" />
 </template>
 ```
+
+::right::
+
+### Pros
+
+* Allows colocating code by feature
+* Great behavior sharing with simple functions (composables)
+### Cons
+
+* Lack of discipline can result in spaghetti code
+* new APIs to pick up
+* indentation and big return objects
+
 ---
 cols: '1-1'
 titleRow: true
 title: 'From setup() to <script setup>'
 ---
 
-```html {all|2-3,7-11,18-20|2,3,7,18-20} 
+```html {all|2-3,7-12,18-20|2,3,7-8,18-20}
 <script>
-import {ref } from 'vue'
+import { ref } from 'vue'
 import ChildComponent from './Child.vue'
 
 export defineComponent({
   setup() {
     const msg = ref('Hello Vue.js Germany!')
-    
+    function handler() { doSomething() }
     return {
-      msg
+      msg,
+      handler
     }
   },
   components: {
@@ -101,7 +144,7 @@ export defineComponent({
 })
 </script>
 <template>
-  <ChildComponent :msg="msg" />
+  <ChildComponent :msg="msg" @someEvent="handler" />
 </template>
 ```
 
@@ -196,11 +239,11 @@ author: smart people in the audience
 
 ---
 cols: '1-1'
-title: Compiler Hints to the rescue!
+title: 'Compiler Hints: defineProps() / defineEmits()'
 titleRow: true
 ---
 
-```html{all|6-9|10|11-15|20|6-15,20}
+```html{all|6-9|10|11-15|6-15}
 <script>
 import { defineComponent } from 'vue'
 import { useVModel } from '@vueuse/core'
@@ -227,7 +270,9 @@ export default defineComponent({
 
 ::right::
 
-```html
+<v-click at="4">
+
+```html{all|4-7|9|11|all}
 <script setup>
 import { useVModel } from "@vueuse/core";
 
@@ -244,6 +289,12 @@ const model = useVModel(props, "modelValue", emit);
   <ChildComponent :title="title" v-model="model" />
 </template>
 ```
+
+</v-click>
+
+<v-click>
+  <p>These are "compiler hints", they disappear during compilations</p>
+</v-click>
 
 ---
 title: 'Example 2: Compiler Hints'
@@ -330,6 +381,77 @@ title: "Example 3: Second Script Block"
 titleRow: false
 prod: true
 ---
+
+---
+cols: '1-1'
+titleRow: true
+title: 'Closed by default'
+clicks: 3
+---
+
+* `<script setup>` does not expose its setup state on the instance
+* state that should be accessible through i.e. template refs needs to be explicitly declared
+
+<template v-if="$slidev.nav.clicks >= 3">
+  <p class="block !mt-8 border-bottom"><code>defineExpose()</code> allows to declare exposed state</p>
+
+* Allows authors to declare truly internal state
+* Prevents users from accidentally using internal state
+</template>
+
+
+::right::
+
+<template v-if="$slidev.nav.clicks >= 1 && $slidev.nav.clicks < 3 ">
+
+```html{all|5,8,12}
+<script setup>
+import { ref } from "vue";
+
+const props = defineProps({
+  title: String,
+});
+
+const message = ref('')
+
+</script>
+<template>
+  <ChildComponent :title="title" v-model="message" />
+</template>
+```
+</template>
+
+<v-click at="3">
+
+```html{5,8,10-12,16}
+<script setup>
+import { ref } from "vue";
+
+const props = defineProps({
+  title: String,
+});
+
+const message = ref('')
+
+defineExpose({
+  message,
+})
+
+</script>
+<template>
+  <ChildComponent :title="title" v-model="message" />
+</template>
+```
+</v-click>
+
+---
+layout: big-points
+title: Takeaways
+---
+
+1. more enjoyable & ergonomic
+2. more performant
+3. more secure for lib authors & bug teams
 
 ---
 layout: outro
