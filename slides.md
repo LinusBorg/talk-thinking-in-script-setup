@@ -10,18 +10,27 @@ drawings:
   persist: false
 ---
 
-# The right perspective for &lt;script setup&gt;
-A look under the hood and into the future
+# What goes on in &lt;script setup&gt;?
+A look under the hood
+
+---
+layout: big-points
+---
+
+* Why does `<script setup>` exist?
+* How does it work under the hood?
+* How to I structure my code optimally?
 
 ---
 layout: section
 ---
 
-# How it came to be
+# Why we got `<script setup>`
 
 ---
 layout: full-image
 image: GokuVsVegeta
+title: 'Clash of the APIs'
 ---
 
 <div class="flex h-full justify-around items-end w-full text-shadow-lg text-pink-400 font-bold ">
@@ -179,19 +188,6 @@ const msg = ref('Hello Vue.js Germany!')
 <h2 v-click class="text-2xl mt-4">Available in Vue <code>2.7</code>!</h2>
 
 ---
-title: 'Example 1: Basic Compilation'
-layout: vue-repl
-example: Simple
-prod: true
-outputMode: js
----
-
----
-layout: section
----
-# Credit where credit is due
-
----
 cols: '1-1'
 titleRow: false
 title: Vue vs. Svelte style
@@ -230,6 +226,21 @@ let msg = 'Hello Vue.js Germany!'
 </v-click>
 
 <iframe v-click class="mt-12" src="https://giphy.com/embed/26DMTEijJDudzovvO" width="320" frameBorder="0" allowFullScreen></iframe>
+
+---
+layout: section
+---
+
+# What goes on under the hood?
+
+---
+title: 'Example 1: Basic Compilation'
+layout: vue-repl
+example: Simple
+prod: true
+outputMode: js
+---
+
 ---
 layout: quote
 author: smart people in the audience
@@ -310,15 +321,26 @@ title: Accessing Slots & attrs
 titleRow: true
 ---
 
-```html{all|2,4|2,4,5|2,4,5,8,9|all}
-<script setup>
-import { useSlots } from "vue";
+```html{all|5}
+<script>
+import { defineComponent } from 'vue'
 
-const slots = useSlots()
-const title = computed(() => slots.default ?? 'Default Title')
+export default defineComponent({
+  setup(props, { slots, attrs }) {
+    const title = computed(() => slots.default ?? 'Default Title')
+    const id = computed(
+     () => attrs.id ?? 'myid-' + Math.round((Math.random() * 10000))
+    )
+    
+    return { 
+      title,
+      id,
+    }
+  }
+})
 </script>
 <template>
-  <ChildComponent :title="title">
+  <ChildComponent :title="title" :id="id">
     <slot />
   </ChildComponent>
 </template>
@@ -326,24 +348,24 @@ const title = computed(() => slots.default ?? 'Default Title')
 
 ::right::
 
-<v-click at=4>
+<v-click>
 
-```html{all|2,9|2,9,10-12|2,9,10-12,15|all}
+```html{all|2,4,5}
 <script setup>
-import { useAttrs } from "vue";
+import { useSlots, useAttrs } from "vue";
 
-const props = defineProps({
-  title: String,
-  modelValue: String,
-});
-
+const slots = useSlots()
 const attrs = useAttrs()
+
+const title = computed(() => slots.default ?? 'Default Title')
 const id = computed(
   () => attrs.id ?? 'myid-' + Math.round((Math.random() * 10000))
 )
 </script>
 <template>
-  <ChildComponent :id="id" />
+  <ChildComponent :title="title" :id="id">
+    <slot />
+  </ChildComponent>
 </template>
 ```
 
@@ -351,36 +373,6 @@ const id = computed(
 
 <p v-click>These are runtime composables, not compiler hints</p>
 
----
-layout: big-points
----
-# A place for everything else?
-
-
-<style>
-.slidev-vclick-target {
-  transition: all 500ms ease;
-}
-
-[data-xzibit].slidev-vclick-hidden {
-  @apply -bottom-full
-}
-</style>
-* more exotic options like `inheritAttrs: false`?
-* helpers?
-* exports?
-
-<h2 v-click class="!text-6xl mt-12 font-bold">Another script block!</h2>
-
-<img v-after src="/xzibit.jpg" data-xzibit class="w-52 block mx-auto -bottom-6 absolute left-[50%]">
-
----
-layout: vue-repl
-example: secondScript
-title: "Example 3: Second Script Block"
-titleRow: false
-prod: true
----
 
 ---
 cols: '1-1'
@@ -390,7 +382,7 @@ clicks: 3
 ---
 
 * `<script setup>` does not expose its setup state on the instance
-* state that should be accessible through i.e. template refs needs to be explicitly declared
+* It can't be accessed by i.e. the parent through a template ref
 
 <template v-if="$slidev.nav.clicks >= 3">
   <p class="block !mt-8 border-bottom"><code>defineExpose()</code> allows to declare exposed state</p>
@@ -445,13 +437,76 @@ defineExpose({
 </v-click>
 
 ---
+layout: vue-repl
+example: expose
+prod: true
+title: 'Example 3: Closed by Default'
+---
+
+---
+layout: big-points
+---
+# A place for everything else?
+
+
+<style>
+.slidev-vclick-target {
+  transition: all 500ms ease;
+}
+
+[data-xzibit].slidev-vclick-hidden {
+  @apply -bottom-full
+}
+</style>
+* more exotic options like `inheritAttrs: false`?
+* helpers?
+* exports?
+
+<h2 v-click class="!text-6xl mt-12 font-bold">Another script block!</h2>
+
+<img v-after src="/xzibit.jpg" data-xzibit class="w-52 block mx-auto -bottom-6 absolute left-[50%]">
+
+---
+layout: vue-repl
+example: secondScript
+title: "Example 4: Second Script Block"
+titleRow: false
+prod: true
+---
+
+---
+layout: section
+---
+
+# Improvements up ahead
+
+<!--  
+* We have a compiler
+* so we can do more crazy cool things
+* improve TS support
+* get rid of ref's .value
+* reactive props destructuring
+-->
+
+---
+layout: big-points
+title: Improvements up ahead
+titleRow: true
+---
+
+
+* Type-based props & events
+* Reactivity Transform
+
+---
 layout: big-points
 title: Takeaways
 ---
 
-1. more enjoyable & ergonomic
-2. more performant
-3. more secure for lib authors & bug teams
+1. `<script setup>` is **not** a new third API
+2. It's a more ergonomic way to use Composition API
+3. It's more performant
+4. Further cpomiler-based optimizations in the future
 
 ---
 layout: outro
@@ -482,6 +537,26 @@ repository: 'github.com/linusborg'
 <a class="text-sm" href="https://sli.dev" target="_blank" rel="noopener">https://sli.dev</a>
 
 </div>
+---
+layout: section
+---
+
+# How to structure your code
+
+---
+layout: big-points
+title: 'Structure guidelines'
+---
+
+1. Start with imports, props, emits
+2. Then call composables to setup core behaviors
+3. Comments are your friend.
+4. Extract into functions to cut down on number of lines.
+
+<p v-click>Generally, follow your gut</p>
+
+
+
 ---
 layout: big-points
 title: Links Collection
