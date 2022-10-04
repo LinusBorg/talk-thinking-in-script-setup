@@ -3,6 +3,7 @@ import CompilerHints from "./compilerHints/App.vue?raw";
 import ChildComponent from "./compilerHints/Comp.vue?raw";
 import secondScript from "./secondScript";
 import expose from "./expose";
+import reactivityTransform from "./reactivityTransform";
 export default {
   Simple: {
     "App.vue": Simple,
@@ -13,4 +14,5 @@ export default {
   },
   secondScript,
   expose,
+  reactivityTransform,
 };

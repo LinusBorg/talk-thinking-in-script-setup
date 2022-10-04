@@ -499,14 +499,85 @@ titleRow: true
 * Reactivity Transform
 
 ---
+cols: '1-1'
+title: Props from types
+titleRow: true
+clicks: 3
+---
+
+<template v-if="$slidev.nav.clicks === 0">
+
+```html
+<script setup>
+const props = defineProps({
+  title: {
+    type: String,
+    required: true
+  },
+  subtitle: String // optional
+})
+</script>
+```
+
+</template>
+<template v-if="$slidev.nav.clicks">
+
+```html
+<script setup lang="ts">
+const props = defineProps<{
+  title: string
+  subtitle?: string
+}>()
+</script>
+```
+
+</template>
+
+<template v-if="$slidev.nav.clicks >= 2">
+
+```html
+<script setup lang="ts">
+interface Props {
+  title: string
+  subtitle?: string
+}
+const props = defineProps<Props>()
+</script>
+```
+
+</template>
+
+
+::right::
+
+<v-click at="3">
+
+* already available since Vue 3.x
+* But functionality is limited
+  * interface needs to be defined within component
+  * can't be imported
+  * no generics support
+
+<p class="text-3xl !leading-normal">Better support a goal, but technically challenging</p>
+
+</v-click>
+
+
+---
+layout: vue-repl
+example: reactivityTransform
+prod: true
+---
+
 layout: big-points
 title: Takeaways
 ---
 
 1. `<script setup>` is **not** a new third API
 2. It's a more ergonomic way to use Composition API
-3. It's more performant
-4. Further cpomiler-based optimizations in the future
+3. using the same runtime APIs after compilation
+3. and yet performs better
+4. also: further compiler-based optimizations in the future
 
 ---
 layout: outro
