@@ -562,22 +562,36 @@ const props = defineProps<Props>()
 
 </v-click>
 
+---
+title: 'Example 5: Props from types'
+layout: vue-repl
+example: CompilerHints
+prod: true
+outputMode: js
+---
+
 
 ---
 layout: vue-repl
 example: reactivityTransform
 prod: true
+title: 'Example 6: Reactivity Transform'
 ---
 
+---
 layout: big-points
 title: Takeaways
 ---
+
+<v-clicks>
 
 1. `<script setup>` is **not** a new third API
 2. It's a more ergonomic way to use Composition API
 3. using the same runtime APIs after compilation
 3. and yet performs better
 4. also: further compiler-based optimizations in the future
+
+</v-clicks>
 
 ---
 layout: outro
